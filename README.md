@@ -1,2 +1,2 @@
-# -Arena-dos-Processos-Batalha-dos-Rob-s-Aut-nomos
+# -Arena-dos-Processos-Batalha-dos-Robos-Autonomos
 Um jogo de tabuleiro com robôs.

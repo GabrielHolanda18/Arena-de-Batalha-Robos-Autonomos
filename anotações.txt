@@ -1,9 +1,0 @@
-Arquivo tabuleiro não precisa mais pois em configuracao_jogo ja tem o necessario
-arquivo Esta classe precisa ser totalmente refatorada para atender aos requisitos de threads e mecânicas de jogo
-Remova Duelo.py como um módulo separado se você incorporar a lógica em processo_robo.py.
-
-:param id_robo: ID do robô.
-    :param tipo_lock: Tipo de lock (INDICE_LOCK_BATERIA, INDICE_LOCK_GRID, INDICE_LOCK_ROBOS).
-    :param indice_lock: Índice da bateria se tipo_lock for INDICE_LOCK_BATERIA.
-    :param esta_pedindo: True se o robô está solicitando o lock.
-    :param esta_segurando: True se o robô está segurando o lock.

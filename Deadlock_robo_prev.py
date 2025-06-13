@@ -10,6 +10,7 @@ def robo_a(battery_mutex, grid_mutex):
     """
     O Robô A tenta adquirir o lock1(battery_mutex) e depois o lock2(grid_battery).
     """
+    logging.info(f"Iniciando a Prevenção de Deadlock\n")
     #print(f"Robô: Tentando travar battery_mutex...")
     logging.info(f"O Robô A Tentando travar battery_mutex...")
     battery_mutex.acquire() # Adquire o primeiro lock
@@ -27,13 +28,14 @@ def robo_a(battery_mutex, grid_mutex):
 
 def robo_b(battery_mutex, grid_mutex):
     """
-    O Robô B tenta o grid_mutex e depois trava battery_mutex.
+    O Robô B também tenta adquirir battery_mutex primeiro e depois grid_mutex.
+    Esta ordem consistente PREVINE o deadlock.    
     """
     #print(f"Robô B: Tentando o grid_mutex...")
-    logging.info(f"Tentando o grid_mutex...")
+    logging.info(f"Robô B: Tentando o battery_mutex...")
     battery_mutex.acquire() # Adquire o primeiro lock
     #print(f"Robô B: Grid_mutex adquirido. Agora tentando travar battery_mutex...")
-    logging.info(f"Grid_mutex adquirido. Agora tentando travar battery_mutex...")
+    logging.info(f"Robô B: battery_mutex adquirido. Agora tentando travar grid_mutex...")
     time.sleep(0.1) # Simula algum trabalho ou troca de contexto
     grid_mutex.acquire() # Tenta adquirir o segundo lock
 

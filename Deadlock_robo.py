@@ -9,12 +9,15 @@ logging.basicConfig(filename='deadlock_log.txt', level=logging.INFO,
 def robo_a(battery_mutex, grid_mutex):
     """
     O Robô A tenta adquirir o lock1(battery_mutex) e depois o lock2(grid_battery).
-    """
+    """    
+    
+    logging.info(f"Iniciando o Deadlock\n")
+    logging.info(f"\nEssa ordem cruzada leva à condição de espera circular, um dos quatro requisitos para um deadlock\n")
     #print(f"Robô: Tentando travar battery_mutex...")
-    logging.info(f"Tentando travar battery_mutex...")
+    logging.info(f"Robô A: Tentando adquirir battery_mutex...")
     battery_mutex.acquire() # Adquire o primeiro lock
     #print(f"Robô A: Trava battery_mutex. Agora tentando grid_mutex...")
-    logging.info(f"Trava battery_mutex. Agora tentando grid_mutex...")
+    logging.info(f"Robô A: Adquire battery_mutex. Agora tenta adquirir grid_mutex...")
     time.sleep(0.1) # Simula algum trabalho ou troca de contexto
     grid_mutex.acquire() # Tenta adquirir o segundo lock
 
@@ -30,10 +33,10 @@ def robo_b(battery_mutex, grid_mutex):
     O Robô B tenta o grid_mutex e depois trava battery_mutex.
     """
     #print(f"Robô B: Tentando o grid_mutex...")
-    logging.info(f"Tentando o grid_mutex...")
+    logging.info(f"Robô B: Tentando adquirir o grid_mutex...")
     grid_mutex.acquire() # Adquire o segundo lock
     #print(f"Robô B: Grid_mutex adquirido. Agora tentando travar battery_mutex...")
-    logging.info(f"Grid_mutex adquirido. Agora tentando travar battery_mutex...")
+    logging.info(f"Robô B: Grid_mutex adquirido. Agora tentando adquirir battery_mutex...")
     time.sleep(0.1) # Simula algum trabalho ou troca de contexto
     battery_mutex.acquire() # Tenta adquirir o primeiro lock
 

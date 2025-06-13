@@ -3,7 +3,8 @@ import time
 import logging
 
 logging.basicConfig(filename='deadlock_log.txt', level=logging.INFO,
-                    format='[%(asctime)s] :: %(levelname)s :: %(message)s')
+                    format='[%(asctime)s] :: %(levelname)s :: %(message)s',
+                    encoding='utf-8')
                     
 def robo_a(battery_mutex, grid_mutex):
     """

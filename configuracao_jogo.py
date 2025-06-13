@@ -33,18 +33,20 @@ INDICE_LOCK_ROBOS = 2
 class DadosCompartilhados:
     def __init__(self, manager):
         # Grid do jogo (matriz)
-        self.tabuleiro_grid = manager.Array(ctypes.c_char, LARGURA_GRID * ALTURA_GRID)
+        # CORREÇÃO AQUI: De manager.Array("c", ...) ou manager.Array(ctypes.c_char, ...)
+        # Para manager.Array("B", b' ' * ...)
+        self.tabuleiro_grid = manager.Array("B", b' ' * (LARGURA_GRID * ALTURA_GRID))
         for i in range(LARGURA_GRID * ALTURA_GRID):
             self.tabuleiro_grid[i] = CELULA_VAZIA # Inicializa tudo vazio
 
         # Atributos dos Robôs Arrays separados para cada atributo
-        self.ids_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.forcas_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.energias_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.velocidades_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.pos_x_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.pos_y_robos = manager.Array(ctypes.c_int, MAX_ROBOS)
-        self.status_robos = manager.Array(ctypes.c_int, MAX_ROBOS) # Vivo/Morto
+        self.ids_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.forcas_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.energias_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.velocidades_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.pos_x_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.pos_y_robos = manager.Array('i', [0] * MAX_ROBOS)
+        self.status_robos = manager.Array('i', [0] * MAX_ROBOS) # Vivo/Morto # Vivo/Morto
 
         # Flags do Jogo
         self.jogo_inicializado = manager.Value(ctypes.c_bool, False) # config inicial 
@@ -69,23 +71,23 @@ class DadosCompartilhados:
         #lock_segurado_bateria[robo_id * MAX_BATERIAS + bateria_idx] = verdade se o robô tem a bateria
         #lock_segurado_robos[robo_id] = verdade se o robô tem o mutex_robos_atributos
 
-        self.lock_segurado_grid = manager.Array(ctypes.c_bool, MAX_ROBOS)
-        self.lock_segurado_bateria = manager.Array(ctypes.c_bool, MAX_ROBOS * MAX_BATERIAS)
-        self.lock_segurado_robos = manager.Array(ctypes.c_bool, MAX_ROBOS)
+        self.lock_segurado_grid = manager.Array('b', [False] * MAX_ROBOS) # 'b' para bools (0/1)
+        self.lock_segurado_bateria = manager.Array('b', [False] * (MAX_ROBOS * MAX_BATERIAS))
+        self.lock_segurado_robos = manager.Array('b', [False] * MAX_ROBOS)
 
         # Para verificar quem está pedindo qual lock
         # lock_pedido_grid[robo_id] = se o robô está pedindo o mutex_grid
         # lock_pedido_bateria[robo_id * MAX_BATERIAS + bateria_idx] = se o robô está pedindo a bateria
         # lock_pedido_robos[robo_id] = se o robô está pedindo o mutex_robos_atributos
 
-        self.lock_pedido_grid = manager.Array(ctypes.c_bool, MAX_ROBOS)
-        self.lock_pedido_bateria = manager.Array(ctypes.c_bool, MAX_ROBOS * MAX_BATERIAS)
-        self.lock_pedido_robos = manager.Array(ctypes.c_bool, MAX_ROBOS)
+        self.lock_pedido_grid = manager.Array('b', [False] * MAX_ROBOS)
+        self.lock_pedido_bateria = manager.Array('b', [False] * (MAX_ROBOS * MAX_BATERIAS))
+        self.lock_pedido_robos = manager.Array('b', [False] * MAX_ROBOS)
 
         # Para registrar qual bateria um robô está tentando adquirir
         # fundamental para a detectar o deadlock verifica se o 
         # Robô B tem GRID e quer a mesma bateria que o Robô A possui
-        self.tentando_pegar_bateria_id = manager.Array(ctypes.c_int, MAX_ROBOS) # -1 se não estiver
+        self.tentando_pegar_bateria_id = manager.Array('i', [-1] * MAX_ROBOS) # -1 se não estiver
         for i in range(MAX_ROBOS): self.tentando_pegar_bateria_id[i] = -1
 
     # Funções para verifica se estão dentro dos limites do tabuleiro.

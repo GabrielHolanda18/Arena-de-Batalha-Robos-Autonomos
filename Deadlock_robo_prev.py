@@ -3,17 +3,18 @@ import time
 import logging
 
 logging.basicConfig(filename='deadlock_log.txt', level=logging.INFO,
-                    format='[%(asctime)s] :: %(levelname)s :: %(message)s')
+                    format='[%(asctime)s] :: %(levelname)s :: %(message)s',
+                    encoding='utf-8')
                     
 def robo_a(battery_mutex, grid_mutex):
     """
     O Robô A tenta adquirir o lock1(battery_mutex) e depois o lock2(grid_battery).
     """
     #print(f"Robô: Tentando travar battery_mutex...")
-    logging.info(f"Tentando travar battery_mutex...")
+    logging.info(f"O Robô A Tentando travar battery_mutex...")
     battery_mutex.acquire() # Adquire o primeiro lock
     #print(f"Robô A: Trava battery_mutex. Agora tentando grid_mutex...")
-    logging.info(f"Trava battery_mutex. Agora tentando grid_mutex...")
+    logging.info(f"O Robô A Trava battery_mutex. Agora tentando grid_mutex...")
     time.sleep(0.1) # Simula algum trabalho ou troca de contexto
     grid_mutex.acquire() # Tenta adquirir o segundo lock
 
@@ -63,5 +64,5 @@ if __name__ == "__main__":
     p2.join()
 
     print("\nSimulação finalizada. Se os processos não completaram, um deadlock ocorreu.")
-    logging.info(f"Simulação finalizada.")
+    logging.info(f"Simulação finalizada.\n")
     print("Para observar o deadlock, você pode precisar encerrar o programa manualmente (Ctrl+C).")

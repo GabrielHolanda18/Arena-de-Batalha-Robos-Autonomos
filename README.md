@@ -11,14 +11,14 @@ Jogo em modo texto (ASCII), totalmente distribuído, onde robôs autônomos duel
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 Nosso objetivo nesse trabalho foi apresentar um jogo que simula uma arena de robôs com inteligência programável disputando recursos gameficados. 
 Cada robô, representado por um processo, deve se mover estrategicamente, coletar baterias para manter sua energia e duelar contra outros robôs que cruzarem seu caminho. O último robô vivo vence.
 
 ---
 
-## 🧠 Tecnologias e Conceitos
+## Tecnologias e Conceitos
 
 - `multiprocessing.Process` e `threading.Thread`
 - `multiprocessing.Manager()` para memória compartilhada
@@ -31,16 +31,23 @@ Cada robô, representado por um processo, deve se mover estrategicamente, coleta
 
 ## 📁 Estrutura de Arquivos
 
-├── main.py # Menu principal do jogo
-├── configuracao_jogo.py # Estruturas compartilhadas (memória e locks)
-├── processo_robo.py # Lógica e comportamento dos robôs
-├── processo_visualizador.py # Renderização em tempo real do tabuleiro
-├── sincronizacao.py # Controle de deadlock e sincronização
-├── demonstracao_deadlock.py # Execução de cenários de deadlock
-├── Deadlock_robo.py # Deadlock forçado (exemplo)
-├── Deadlock_robo_prev.py # Prevenção de deadlock (ordenação de locks)
+main.py # Menu principal do jogo
 
-## 🕹️ Como Jogar
+configuracao_jogo.py # Estruturas compartilhadas (memória e locks)
+
+processo_robo.py # Lógica e comportamento dos robôs
+
+processo_visualizador.py # Renderização em tempo real do tabuleiro
+
+sincronizacao.py # Controle de deadlock e sincronização
+
+demonstracao_deadlock.py # Execução de cenários de deadlock
+
+Deadlock_robo.py # Deadlock forçado (exemplo)
+
+Deadlock_robo_prev.py # Prevenção de deadlock (ordenação de locks)
+
+## Como Jogar
 
 1. **Execute o menu principal**:
    ```bash
@@ -53,32 +60,25 @@ Escolha uma das opções:
 
 3: Sair
 
-🧩 Regras do Jogo
+## Regras do Jogo
 Tabuleiro: 40x20 células
 
 Máximo de 4 robôs e 8 baterias
 
 Cada robô possui:
+- Força (F)
+- Energia (E)
+- Velocidade (V)
+- Poder de duelo: Poder = 2F + E
 
-Força (F)
-
-Energia (E)
-
-Velocidade (V)
-
-Poder de duelo: Poder = 2F + E
-
-Robôs podem:
-
-Mover
-
-Coletar bateria (+20 energia)
-
-Duelar ao colidir com outro robô
+Robôs podem: 
+- Mover
+- Coletar bateria (+20 energia)
+- Duelar ao colidir com outro robô
 
 Empates no duelo: ambos destruídos
 
-⚠️ Sincronização e Deadlock
+## Sincronização e Deadlock
 Ordem obrigatória de locks:
 
 mutex_bateria
@@ -91,23 +91,27 @@ A violação dessa ordem é simulada para mostrar deadlocks.
 
 Robôs detectam e tentam recuperar automaticamente de deadlocks.
 
-👁️ Visualização
+## Visualização
 A visualização é feita em tempo real no terminal com símbolos ASCII:
 
-Símbolo	Significado
-0-3	Robôs (cores diferentes)
-#	Barreira (fixa)
-B	Bateria (recupera energia)
-.	Célula vazia
+## Símbolo	Significado
 
-🏁 Condições de Término
+"0-3"	Robôs (cores diferentes)
+
+"#"	Barreira (fixa)
+
+"B"	Bateria (recupera energia)
+
+"." Célula vazia
+
+## Condições de Término
 Apenas 1 robô vivo: vitória
 
 Todos destruídos: empate
 
 O programa detecta o fim do jogo automaticamente e exibe o vencedor.
 
-📚 Créditos e Autoria
+## Créditos e Autoria
 Desenvolvido por: Leonardo Arigoni, Gabriel Holanda e Carlos Augusto
 
 ✅ Requisitos

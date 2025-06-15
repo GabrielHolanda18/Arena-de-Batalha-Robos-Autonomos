@@ -1,0 +1,3 @@
+[2025-06-14 13:07:59,083] :: INFO :: O VENCEDOR É O ROBÔ 2!
+[2025-06-14 13:07:59,083] :: INFO :: FIM DE JOGO!
+[2025-06-14 13:07:59,135] :: INFO :: Robô 2 (HK): Energia: 5, Pos: (38,7), Status: Vivo

@@ -1,6 +1,7 @@
 import threading
 import time
 import random
+import logging
 from configuracao_jogo import (
     LARGURA_GRID, ALTURA_GRID, CELULA_VAZIA, CELULA_BATERIA, CELULA_BARREIRA,
     STATUS_VIVO, STATUS_MORTO,
@@ -20,12 +21,15 @@ Robô com maior Poder vence; perdedor marca status = morto e libera célula. Emp
 destruídos.
 A negociação do duelo deve ocorrer dentro de grid_mutex, sem gerente
 '''
-def _resolver_duelo(id_robo_1, id_robo_2, shm):
+# shm = "Shared Memory" (Memória Compartilhada)
+def _resolver_duelo(id_robo_1, id_robo_2, shm): 
     """
-    Esta função assume que os locks NECESSÁRIOS (shm.mutex_grid e shm.mutex_robos_atributos)
+    assume que os locks NECESSÁRIOS (shm.mutex_grid e shm.mutex_robos_atributos)
     JÁ foram ADQUIRIDOS pelo robô que iniciou o duelo.
     """
-    print(f"Duelo entre Robô {id_robo_1} e Robô {id_robo_2}!")
+    
+    print(f"\nRobô {id_robo_1} VS Robô {id_robo_2} em batalha!\n")
+
 
     # Acessa os atributos dos robôs diretamente via shm
     poder_robo_1 = _calcular_poder(shm.forcas_robos[id_robo_1], shm.energias_robos[id_robo_1])
@@ -67,9 +71,6 @@ def funcao_thread_sense_act(id_robo):
             continue
 
         # 1. Tirar "snapshot" local do grid (sem lock, para decisão rápida)
-        # Embora o enunciado diga "sem lock", para um snapshot consistente em Python,
-        # é comum pegar um read-lock (se disponível) ou um lock de escrita rápido.
-        # Aqui, pegamos o lock de escrita rapidamente para copiar.
         shm.mutex_grid.acquire()
         copia_local_grid = [[shm.obter_char_grid(x, y) for x in range(LARGURA_GRID)] for y in range(ALTURA_GRID)]
         shm.mutex_grid.release()
@@ -134,7 +135,7 @@ def funcao_thread_sense_act(id_robo):
         # Se depois de todas as tentativas de movimento não encontrou nada interessante ou não pode mover
         if acao_escolhida == "esperar" and (nova_pos_x == shm.pos_x_robos[id_robo] and nova_pos_y == shm.pos_y_robos[id_robo]):
             # Se não moveu nem escolheu outra ação, apenas espera um pouco
-            time.sleep(0.05) # Pequena pausa para evitar busy-waiting
+            time.sleep(0.05) 
             continue # Próximo ciclo do loop principal do robô
 
 
@@ -146,7 +147,7 @@ def funcao_thread_sense_act(id_robo):
             "robos_atributos": False
         }
         
-        # Flag para saber se precisamos re-tentar a ação completa
+        # marca para saber se precisamos re-tentar a ação completa
         re_tentar_acao = False
 
         try:
@@ -178,6 +179,7 @@ def funcao_thread_sense_act(id_robo):
                     else:
                         print(f"Robô {id_robo}: Bloqueado esperando mutex_grid...")
                         shm.mutex_grid.acquire() # Bloqueia e espera
+
                 if not re_tentar_acao: # Se não precisou recuperar
                     atualizar_status_lock(id_robo, INDICE_LOCK_GRID, esta_segurando=True)
                     locks_adquiridos_com_sucesso["grid"] = True
@@ -260,19 +262,19 @@ def funcao_thread_sense_act(id_robo):
                 shm.mutexes_bateria[id_bateria_alvo].release()
                 atualizar_status_lock(id_robo, INDICE_LOCK_BATERIA, id_bateria_alvo, esta_segurando=False)
 
-        time.sleep(0.1) # Pequeno atraso para visualização
+        time.sleep(0.5) # Pequeno atraso para visualização
 
     print(f"Robô {id_robo}: Thread sense_act encerrada.")
 
 # housekeeping (atualiza energia, escreve log, opera locks)
 def funcao_thread_housekeeping(id_robo):
     global dados_compartilhados_do_jogo
-    shm = dados_compartilhados_do_jogo # Alias para facilitar
+    shm = dados_compartilhados_do_jogo 
 
     print(f"Robô {id_robo}: Thread housekeeping iniciada.")
 
     while not shm.jogo_acabou.value and shm.status_robos[id_robo] == STATUS_VIVO:
-        time.sleep(0.5) # A cada 0.5 segundos (ajuste conforme necessário)
+        time.sleep(1) 
 
         # Reduz energia
         shm.mutex_robos_atributos.acquire()
@@ -302,8 +304,11 @@ def funcao_thread_housekeeping(id_robo):
             else: # Todos mortos
                 shm.id_vencedor.value = -1
             print(f"FIM DE JOGO! Robôs vivos: {robos_vivos}. Vencedor: {shm.id_vencedor.value}")
+        
+        
         shm.mutex_robos_atributos.release()
 
+            
     print(f"Robô {id_robo}: Thread housekeeping encerrada.")
 
 

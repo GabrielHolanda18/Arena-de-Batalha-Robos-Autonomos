@@ -1,7 +1,13 @@
 import multiprocessing as mp
 import time
 import os
+import logging
+
 from configuracao_jogo import (LARGURA_GRID, ALTURA_GRID, CELULA_VAZIA, CELULA_BARREIRA, CELULA_BATERIA, MAX_ROBOS, STATUS_VIVO)
+
+logging.basicConfig(filename='SaveDoJogo.txt', level=logging.INFO,
+                    format='[%(asctime)s] :: %(levelname)s :: %(message)s',
+                    encoding='utf-8')
 
 # Variável global para os dados compartilhados, será injetada pelo main_jogo.py
 dados_compartilhados_do_jogo = None
@@ -60,10 +66,12 @@ def processo_visualizador(dados_compartilhados):
             print(f"Robô {i}: Força={shm.forcas_robos[i]}, Energia={shm.energias_robos[i]}, Velocidade={shm.velocidades_robos[i]}, Pos=({shm.pos_x_robos[i]},{shm.pos_y_robos[i]}), Status={status_str}")
         shm.mutex_robos_atributos.release() # Libera o lock
 
-        time.sleep(0.1) # Atualiza a cada 100ms (50-200 ms conforme PDF)
+        time.sleep(0.5) # Atualiza a cada 100ms (50-200 ms conforme PDF)
 
     print("Processo do Visualizador encerrado.")
     if shm.id_vencedor.value != -1:
         print(f"O VENCEDOR É O ROBÔ {shm.id_vencedor.value}!")
+        logging.info(f"O VENCEDOR É O ROBÔ {shm.id_vencedor.value}!")
+        logging.info("FIM DE JOGO!")
     else:
         print("Nenhum robô sobreviveu. Fim de jogo sem vencedor claro.")

@@ -3,13 +3,10 @@ import time
 import os
 
 def limpar_terminal():
-    """Limpa a tela do terminal."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def executar_demonstracao_deadlock():
-    """
-    Executa o script que provoca o deadlock.
-    """
+   
     print("\n" + "="*70)
     print("DEMONSTRAÇÃO 1: PROVOCAÇÃO DO DEADLOCK")
     print("="*70 + "\n")
@@ -23,22 +20,20 @@ def executar_demonstracao_deadlock():
         processo = subprocess.Popen(['python', 'Deadlock_robo.py'])
         
         # Espera um tempo para o deadlock ocorrer.
-        # Você pode precisar ajustar este tempo dependendo da sua máquina.
         print("\nObservando o deadlock. O programa ficará travado...")
         print("Pressione Ctrl+C NO TERMINAL para encerrar esta parte da demonstração.")
-        processo.wait() # Espera o processo terminar (ou ser interrompido)
+        # Espera o processo ser interrompido
+        processo.wait() 
         
     except KeyboardInterrupt:
         print("\n\nDeadlock observado e processo encerrado (Ctrl+C).")
     except Exception as e:
         print(f"\nOcorreu um erro ao executar a demonstração de deadlock: {e}")
 
-    time.sleep(2) # Pequena pausa antes de continuar
+    time.sleep(2)
 
 def executar_demonstracao_prevencao():
-    """
-    Executa o script que implementa a prevenção do deadlock.
-    """
+    
     print("\n" + "="*70)
     print("DEMONSTRAÇÃO 2: PREVENÇÃO DO DEADLOCK (Ordenamento de Recursos)")
     print("="*70 + "\n")
@@ -55,7 +50,7 @@ def executar_demonstracao_prevencao():
     except Exception as e:
         print(f"\nOcorreu um erro ao executar a demonstração de prevenção: {e}")
 
-    time.sleep(2) # Pequena pausa antes de finalizar
+    time.sleep(2) 
 
 if __name__ == "__main__":
     limpar_terminal()

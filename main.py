@@ -4,7 +4,6 @@ import time
 import os
 import sys
 
-# Importações dos módulos do jogo
 from configuracao_jogo import (
     DadosCompartilhados, LARGURA_GRID, ALTURA_GRID, MAX_ROBOS, MAX_BATERIAS,
     CELULA_BARREIRA, CELULA_BATERIA, CELULA_VAZIA
@@ -70,9 +69,6 @@ def configurar_jogo_inicial(dados_compartilhados):
                     shm.definir_char_grid(x, y, str(i)) # Coloca o ID do robô no grid
                     print(f"Robô {i} (Força={shm.forcas_robos[i]}, Energia={shm.energias_robos[i]}, Velocidade={shm.velocidades_robos[i]}) criado em ({x},{y}).")
                     break
-        
-        # Um dos robôs é o "robô do jogador", criado com atributos aleatórios.
-        # O Robô 0 pode ser considerado o robô do jogador, e já está sendo criado com atributos aleatórios.
 
         shm.jogo_inicializado.value = True
         print("--- INICIALIZAÇÃO DO JOGO CONCLUÍDA ---")
@@ -82,8 +78,9 @@ def configurar_jogo_inicial(dados_compartilhados):
     shm.mutex_inicializacao.release()
 
 def rodar_jogo_principal():
-    """Função que orquestra o jogo principal."""
+    
     limpar_terminal()
+
     print("Iniciando o Jogo Principal: Arena dos Processos - Batalha dos Robôs Autônomos.")
 
     # O Manager é fundamental para compartilhar objetos entre processos
@@ -93,8 +90,6 @@ def rodar_jogo_principal():
     dados_compartilhados_do_jogo = DadosCompartilhados(gerenciador)
 
     # Injeta a referência global em outros módulos
-    # Isso é necessário porque os módulos são importados e não sabem da instância de 'dados_compartilhados_do_jogo'
-    # que é criada aqui no main.
     processo_robo.dados_compartilhados_do_jogo = dados_compartilhados_do_jogo
     processo_visualizador.dados_compartilhados_do_jogo = dados_compartilhados_do_jogo
     sync_funcs.dados_compartilhados_do_jogo = dados_compartilhados_do_jogo
@@ -117,8 +112,8 @@ def rodar_jogo_principal():
 
     # Loop principal para esperar o jogo terminar
     while not dados_compartilhados_do_jogo.jogo_acabou.value:
-        time.sleep(0.5) # Espera um pouco para não consumir CPU em excesso
-
+        time.sleep(2) 
+        
     print("\n--- FIM DE JOGO DETECTADO NO MAIN ---")
 
     # Espera todos os processos de robôs terminarem
